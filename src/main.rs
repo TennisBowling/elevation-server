@@ -1,5 +1,6 @@
 use std::net::SocketAddr;
 use std::sync::Arc;
+use gdal::errors::CplErrType;
 use tokio::net::{TcpListener, TcpStream};
 use tokio_tungstenite::accept_async;
 use tokio_tungstenite::tungstenite::Message;
@@ -86,6 +87,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .get_matches();
 
     let location = matches.value_of("d").unwrap();
+
+
+    // We get tons of messages printed if the elevation isnt defined for a place
+    gdal::config::set_error_handler(|lvl: CplErrType, num: i32, msg: &str| {
+        if lvl == CplErrType::Failure {
+            tracing::warn!("GDAL Failiure ({}): {}", num, msg);
+        }
+        else if lvl == CplErrType::Fatal {
+            tracing::error!("GDAL Fatal ({}): {}", num, msg);
+        }
+    });
+
 
     let dataset = Dataset::open(location).unwrap();
     tracing::info!("Opened elevation dataset");
