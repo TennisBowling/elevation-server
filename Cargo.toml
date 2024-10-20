@@ -1,0 +1,24 @@
+[package]
+name = "elevation-server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.36.0", features = ["full"] }
+axum = { version = "0.7.2" }
+serde = {version = "1.0.197", features = ["derive"] }
+tracing = "0.1.40"
+tracing-subscriber = {version = "0.3.18", features = ["env-filter"]}
+geoutils = "0.5.1"
+axum-macros = "0.4.1"
+axum-extra = { version = "0.9.3", features = ["typed-header"] }
+headers = "0.4.0"
+gdal = { git = "https://github.com/georust/gdal", rev = "826cb78" }
+clap = "2.33.3"
+
+
+[profile.highperf]
+inherits = "release"
+lto = "fat"
+codegen-units = 1
+incremental = false
