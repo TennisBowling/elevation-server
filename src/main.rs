@@ -81,13 +81,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             clap::Arg::with_name("d")
                 .long("elev-file")
                 .help("location of elevation .tif file")
+                .takes_value(true)
                 .required(true)
         )
         .get_matches();
 
     let location = matches.value_of("d").unwrap();
 
-    let dataset = Dataset::open(location)?;
+    let dataset = Dataset::open(location).unwrap();
     tracing::info!("Opened elevation dataset");
 
 
